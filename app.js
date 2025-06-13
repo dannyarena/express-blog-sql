@@ -4,6 +4,7 @@ app.use(express.json());  // Middleware per il parsing del JSON
 const postsRouter = require('./routers/posts');
 const notFound = require('./middlewares/notFound');
 const errorsHandler = require('./middlewares/errorsHandler');
+const db = require('./data/db');
 
 app.use('/posts', postsRouter);
 
