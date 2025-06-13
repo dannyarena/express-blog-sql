@@ -16,17 +16,20 @@ function index(req, res) {
 
 // show
 function show(req, res) {
-    const id = parseInt(req.params.id);
-    const post = posts.find(p => p.id === id);
+    const { id } = req.params;
+    const sql = 'SELECT * FROM posts WHERE id = ?';
 
-    if (post) {
-        res.json(post);
-    } else {
-        res.status(404).json({
-            error: 'Not Found',
-            message: 'Post non trovato'
-        });
-    }
+    db.query(sql, [id], (err, results) => {
+        if (err) {
+            return res.status(500).json({ error: 'Errore  nella query al database'});
+        }
+
+        if (results.length === 0) {
+            return res.status(404).json({ error: 'Post non trovato'});
+        }
+
+        res.json(results[0]);
+    })
 }
 
 // store
