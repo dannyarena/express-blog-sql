@@ -70,23 +70,20 @@ function update(req, res) {
 
 // destroy con logica di eliminazione
 function destroy(req, res) {
-    const id = parseInt(req.params.id);
-   const post = posts.find(p => p.id === id);
+    const { id } = req.params;
+    const sql = 'DELETE FROM posts WHERE id = ?';
 
-   if(!post) {
-    return res.status(404).json({
-        error: 'Not Found',
-        message: 'Post non trovato'
-    
-    });
-   }
+    db.query(sql, [id], (err, results) => {
+        if (err) {
+            return res.status(500).json({ error: 'Errore nella cancellazione'});
+        }
 
-// Rimuove il post dall’array
-   posts.splice(posts.indexOf(post), 1);
-// Mostra l’array aggiornato nel terminale
-   console.log(posts);
-// Risponde con 204 No Content
-   res.sendStatus(204);
+        if (results.affectedRows === 0) {
+            return res.status(404).json({ error: 'Post non trovato'});
+        }
+
+        res.sendStatus(204);
+    })
 }
 
 module.exports = {
