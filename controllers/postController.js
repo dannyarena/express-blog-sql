@@ -1,14 +1,17 @@
+const db = require('../data/db');
 const { posts } = require('../data/posts');
 
 // index con filtro tag
 function index(req, res) {
-    let filteredPosts = posts;
+    const sql = 'SELECT * FROM posts';
 
-    if(req.query.tag) {
-        filteredPosts = posts.filter(post =>
-            post.tags.includes(req.query.tag));
-    }
-    res.json(filteredPosts);
+    db.query(sql, (err, results) => {
+        if (err) {
+            return res.status(500).json({ error: 'Errore nella query al database'});
+        }
+
+        res.json(results);
+    })
 }
 
 // show
